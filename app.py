@@ -6,20 +6,35 @@ if 'input_features' not in st.session_state:
     st.session_state['input_features'] = {}
 
 def app_sidebar():
-    st.sidebar.header('Loan Details')
-    emp_length_options = ['< 1 year','1 year','2 years','3 years','4 years','5 years',
-                          '6 years','7 years','8 years','9 years','10+ years']
-    emp_length = st.sidebar.selectbox("Employment Length", emp_length_options)
-    int_rate = st.sidebar.slider('Loan Interest Rate', 5, 40, 10, 1)
-    annual_inc = st.sidebar.text_input("Annual Income '000s", placeholder="in '000s")
-    fico_range_high = st.sidebar.slider('FICO Upper Boundary', 600, 800, 700, 50)
-    loan_amnt = st.sidebar.text_input('Loan Amount')
+    st.sidebar.header('Cupon subscribe')
+    options = ['0','1']
+    is_female = st.sidebar.selectbox("Gender", options)
+    is_married = st.sidebar.selectbox("Married", options)
+    colg_edu = st.sidebar.selectbox("Collage Education", options)
+    is_professional = st.sidebar.selectbox("Profession", options)
+    is_retired = st.sidebar.selectbox("Retired", options)
+    is_unemployed = st.sidebar.selectbox("Unemployed", options)
+    dual_income = st.sidebar.selectbox("dual_income", options)
+    have_minors = st.sidebar.selectbox("have_minors", options)
+    own_house = st.sidebar.selectbox("own_house", options)
+    race_white = st.sidebar.selectbox("race_white", options)
+    speak_english = st.sidebar.selectbox("speak_english", options)
+    yearly_income = st.sidebar.text_input("Annual Income")
+    months_residence = st.sidebar.text_input('months_residence')
     def get_input_features():
-        input_features = {'emp_length': emp_length,
-                          'int_rate': int_rate,
-                          'annual_inc': int(annual_inc)*1000,
-                          'fico_range_high': fico_range_high,
-                          'loan_amnt': int(loan_amnt)
+        input_features = {'is_female': is_female,
+                          'is_married': is_married,
+                          'is_professional': is_professional,
+                          'is_retired': is_retired,
+                          'is_unemployed': is_unemployed,
+                          'dual_income': dual_income,
+                          'have_minors': have_minors,
+                          'own_house': own_house,
+                          'race_white': race_white,
+                          'speak_english': speak_english,
+                          'yearly_income': int(yearly_income),
+                          'colg_edu': colg_edu,
+                          'months_residence': int(months_residence)
                          }
         return input_features
     sdb_col1, sdb_col2 = st.sidebar.columns(2)
@@ -34,19 +49,27 @@ def app_sidebar():
     return None
 
 def app_body():
-    title = '<p style="font-family:arial, sans-serif; color:Black; font-size: 40px;"><b> Welcome to DSSI Loan Assessment</b></p>'
+    title = '<p style="font-family:arial, sans-serif; color:Black; font-size: 40px;"><b> Welcome to DSSI Coupon Assessment</b></p>'
     st.markdown(title, unsafe_allow_html=True)
     default_msg = '**System assessment says:** {}'
     if st.session_state['input_features']:
-        assessment = get_prediction(emp_length=st.session_state['input_features']['emp_length'],
-                                    int_rate=st.session_state['input_features']['int_rate'],
-                                    annual_inc=st.session_state['input_features']['annual_inc'],
-                                    fico_range_high=st.session_state['input_features']['fico_range_high'],
-                                    loan_amnt=st.session_state['input_features']['loan_amnt'])
-        if assessment.lower() == 'yes':
-            st.success(default_msg.format('Approved'))
+        assessment = get_prediction(is_female=st.session_state['input_features']['is_female'],
+                                    is_married=st.session_state['input_features']['is_married'],
+                                    is_professional=st.session_state['input_features']['is_professional'],
+                                    is_retired=st.session_state['input_features']['is_retired'],
+                                    is_unemployed=st.session_state['input_features']['is_unemployed'],
+                                    dual_income=st.session_state['input_features']['dual_income'],
+                                    have_minors=st.session_state['input_features']['have_minors'],
+                                    own_house=st.session_state['input_features']['own_house'],
+                                    race_white=st.session_state['input_features']['race_white'],
+                                    speak_english=st.session_state['input_features']['speak_english'],
+                                    yearly_income=st.session_state['input_features']['yearly_income'],
+                                    colg_edu=st.session_state['input_features']['colg_edu'],
+                                    months_residence=st.session_state['input_features']['months_residence'])
+        if assessment == 1:
+            st.success(default_msg.format('Subscribed'))
         else:
-            st.warning(default_msg.format('Rejected'))
+            st.warning(default_msg.format('Unsubscribed'))
     return None
 
 def main():
